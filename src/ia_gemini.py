@@ -28,4 +28,5 @@ def requisicao_gemini(input_usuario: str) -> tuple[str, int]:
     except errors.APIError as e:
         return e.__str__(), 0
 
-print(requisicao_gemini('olá'))
+if __name__ == '__main__':
+    print(requisicao_gemini('olá'))
