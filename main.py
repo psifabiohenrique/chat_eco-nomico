@@ -2,6 +2,8 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 
 from src.telas.tela_input import TelaInput
+from src.telas.tela_respostas import TelaRespostas
+from src.telas.tela_resultados import TelaResultados
 
 
 class App(ThemedTk):
@@ -15,12 +17,13 @@ class App(ThemedTk):
 
         self.quadros = {}
 
-        for Q in (TelaInput,):
+        for Q in (TelaInput, TelaRespostas, TelaResultados):
+            nome_quadro = Q.__name__
             quadro = Q(pai=conteiner, controlador=self)
-            self.quadros[Q] = quadro
-            quadro.grid(row=0, column=0, sticky="nsew")
+            self.quadros[nome_quadro] = quadro
+            quadro.grid(row=1, column=1, sticky="nsew")
         
-        self.mostrar_quadros(TelaInput)
+        self.mostrar_quadros("TelaInput")
 
     def mostrar_quadros(self, pagina):
         quadro = self.quadros[pagina]
