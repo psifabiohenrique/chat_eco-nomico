@@ -1,6 +1,6 @@
 import customtkinter as ctk
-from components.calculos_consumo import GraficosConsumo
-from components.graficos_economia import GraficosEconomia
+from src.components.calculos_consumo import GraficosConsumo
+from src.components.graficos_economia import GraficosEconomia
 
 class JanelaGraficos(ctk.CTkToplevel):
     def __init__(self, master, **kwargs):

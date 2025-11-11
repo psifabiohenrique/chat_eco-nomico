@@ -1,10 +1,10 @@
 import customtkinter as ctk
-from components.barra_lateral import BarraLateral
-from components.quadro_chat import QuadroChat
-from components.janela_graficos import JanelaGraficos
-from services.ia_gemini import obter_resposta_gemini
-from services.ia_local import obter_resposta_ollama
-from services.limpeza_prompt import limpar_prompt
+from src.components.barra_lateral import BarraLateral
+from src.components.quadro_chat import QuadroChat
+from src.components.janela_graficos import JanelaGraficos
+from src.services.ia_gemini import obter_resposta_gemini
+from src.services.ia_local import obter_resposta_ollama
+from src.services.limpeza_prompt import limpar_prompt
 
 class App(ctk.CTk):
     def __init__(self):
