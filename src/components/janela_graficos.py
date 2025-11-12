@@ -2,13 +2,13 @@ import customtkinter as ctk
 from src.components.calculos_consumo import GraficosConsumo
 from src.components.graficos_economia import GraficosEconomia
 
-class JanelaGraficos(ctk.CTkToplevel):
+class JanelaGraficos(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.title("Gráficos de Consumo e Economia")
-        self.geometry("550x650") 
-        self.protocol("WM_DELETE_WINDOW", self.on_close) 
+        # self.title("Gráficos de Consumo e Economia")
+        # self.geometry("550x650") 
+        # self.protocol("WM_DELETE_WINDOW", self.on_close) 
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -20,7 +20,7 @@ class JanelaGraficos(ctk.CTkToplevel):
         self.graficos_economia = GraficosEconomia(self)
         self.graficos_economia.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 10))
     
-        self.after(10, self.master.atualizar_todos_graficos)
+        # self.after(10, self.master.atualizar_todos_graficos)
         
     def on_close(self):
         self.master.janela_graficos_instancia = None 

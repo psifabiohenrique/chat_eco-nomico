@@ -1,34 +1,29 @@
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import errors
 
 load_dotenv()
 
-api_key = os.getenv("GOOGLE_API_KEY")
-if api_key:
-    genai.configure(api_key=api_key)
-else:
-    print("AVISO: API_KEY não encontrada no .env. A API do Gemini falhará.")
-
-try:
-   
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    print("[API] Modelo 'gemini-1.5-flash' carregado com sucesso.")
-except Exception as e:
-    print(f"ERRO ao carregar o modelo: {e}")
-    model = None
-
-def obter_resposta_gemini(prompt: str) -> str:
-    if not model:
-        return "Erro: modelo não carregado."
-
+def obter_resposta_gemini(input_usuario: str) -> tuple[str, int]:
+    """
+    Recebe obrigatóriamente um input de usuário. Envia para o GEMINI processar as entradas e retornar uma tupla, com a string de resultado no indice 0 e o inteiro do total de tokens no indice 1.
+    """
+    api_key = os.getenv("API_KEY")
+    if api_key is None:
+        raise Exception("A Chave de API não está configurada na variável de ambiente!")
+    
     try:
-        resposta = model.generate_content(prompt)
+        client = genai.Client(api_key=api_key)
 
-        try:
-            return resposta.text.strip()
-        except:
-            return resposta.candidates[0].content.parts[0].text.strip()
 
-    except Exception as e:
-        return f"Erro na API do Gemini: {e}"
+        resposta = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=input_usuario,
+        )
+        contador_tokens_totais = resposta.usage_metadata.total_token_count # type: ignore
+        texto_resposta = resposta.text
+
+        return texto_resposta, contador_tokens_totais # type: ignore
+    except errors.APIError as e:
+        return e.__str__(), 0

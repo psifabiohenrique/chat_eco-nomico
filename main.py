@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from src.components.quadro_respostas import QuadroRespostas
 from src.components.barra_lateral import BarraLateral
 from src.components.quadro_chat import QuadroChat
 from src.components.janela_graficos import JanelaGraficos
@@ -6,9 +7,17 @@ from src.services.ia_gemini import obter_resposta_gemini
 from src.services.ia_local import obter_resposta_ollama
 from src.services.limpeza_prompt import limpar_prompt
 
+
+class Janelas:
+    INICIO = 'INICIO'
+    RESPOSTAS = 'RESPOSTAS'
+    GRAFICOS = 'GRAFICOS'
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+
+        self.JANELAS = Janelas()
 
         self.title("Chat ECO-nômico")
         self.geometry("1000x700") 
@@ -31,14 +40,10 @@ class App(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)    
 
         self.barra_lateral = BarraLateral(self, 
-                                          funcao_trocar_llm=self.ao_trocar_llm, 
-                                          funcao_abrir_graficos=self.abrir_janela_graficos) 
+                                          funcao_trocar_llm=self.ao_trocar_llm) 
         self.barra_lateral.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
-
-        self.quadro_chat = QuadroChat(self, funcao_enviar_prompt=self.processar_prompt)
-        self.quadro_chat.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10) 
         
-        self.ao_trocar_llm("gemini") 
+        self.ao_trocar_llm(self.JANELAS.INICIO) 
 
     def abrir_janela_graficos(self):
         if self.janela_graficos_instancia is None:
@@ -65,8 +70,15 @@ class App(ctk.CTk):
         return len(texto.split())
 
     def ao_trocar_llm(self, nome_llm: str):
-        self.llm_ativo = nome_llm
-        self.quadro_chat.adicionar_mensagem("Sistema", f"Chat agora conectado ao {nome_llm.upper()}.")
+        if nome_llm == self.JANELAS.INICIO:
+            self.quadro_resp =  QuadroChat(self, funcao_enviar_prompt=self.processar_prompt)
+            self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10) 
+        elif nome_llm == self.JANELAS.RESPOSTAS:
+            self.quadro_resp = QuadroRespostas(self,)
+            self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
+        elif nome_llm == self.JANELAS.GRAFICOS:
+            self.quadro_resp = JanelaGraficos(self)
+            self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
 
     def processar_prompt(self, prompt_original: str):
         

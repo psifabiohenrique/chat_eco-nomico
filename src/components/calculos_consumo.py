@@ -12,16 +12,18 @@ class GraficosConsumo(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
 
         plt.style.use('dark_background')
-        self.cor_fundo_figura = self.cget("fg_color")[1] 
+        # self.cor_fundo_figura = self.cget("fg_color")[1] 
 
-        self.figura_energia = Figure(figsize=(5, 2.5), dpi=100, facecolor=self.cor_fundo_figura)
+        # self.figura_energia = Figure(figsize=(5, 2.5), dpi=100, facecolor=self.cor_fundo_figura)
+        self.figura_energia = Figure(figsize=(5, 2.5), dpi=100)
         self.ax_energia = self.figura_energia.add_subplot(111)
         self.canvas_energia_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.canvas_energia_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=(10, 5))
         self.canvas_energia = FigureCanvasTkAgg(self.figura_energia, master=self.canvas_energia_frame)
         self.canvas_energia.get_tk_widget().pack(side=ctk.TOP, fill=ctk.BOTH, expand=True)
 
-        self.figura_agua = Figure(figsize=(5, 2.5), dpi=100, facecolor=self.cor_fundo_figura)
+        # self.figura_agua = Figure(figsize=(5, 2.5), dpi=100, facecolor=self.cor_fundo_figura)
+        self.figura_agua = Figure(figsize=(5, 2.5), dpi=100)
         self.ax_agua = self.figura_agua.add_subplot(111)
         self.canvas_agua_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.canvas_agua_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=(5, 10))
@@ -31,7 +33,7 @@ class GraficosConsumo(ctk.CTkFrame):
         self.atualizar_dados(valores_energia=[0, 0], valores_agua=[0, 0])
 
     def configurar_estilo_eixo(self, ax, titulo: str, unidade_y: str):
-        ax.set_facecolor(self.cor_fundo_figura)
+        # ax.set_facecolor(self.cor_fundo_figura)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['bottom'].set_color('white')
