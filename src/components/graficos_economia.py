@@ -3,33 +3,39 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
+#Define a classe GraficosEconomia 
 class GraficosEconomia(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        
+        #Define-se que há apenas 2 linhas dentro desse Frame e weight=1 permite expansão proporcional da Tela
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+        #Cor de fundo do gráfico
         plt.style.use('dark_background')
+        #Cria a figura do gráfico de energia
         self.figura_energia = Figure(figsize=(5, 2.5), dpi=100)
         self.ax_energia = self.figura_energia.add_subplot(111)
+        #Cria um frame somente para a energia calculada
         self.canvas_energia_frame = ctk.CTkFrame(self, fg_color="transparent")
+        #Posição linha e coluna 0,0 o grade 
         self.canvas_energia_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=(10, 5))
         self.canvas_energia = FigureCanvasTkAgg(self.figura_energia, master=self.canvas_energia_frame)
         self.canvas_energia.get_tk_widget().pack(side=ctk.TOP, fill=ctk.BOTH, expand=True)
-
+       
+        #Cria a figura do gráfico de água
         self.figura_agua = Figure(figsize=(5, 2.5), dpi=100)
         self.ax_agua = self.figura_agua.add_subplot(111)
+        #Cria um frame somente para a água calculada
         self.canvas_agua_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.canvas_agua_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=(5, 10))
         self.canvas_agua = FigureCanvasTkAgg(self.figura_agua, master=self.canvas_agua_frame)
         self.canvas_agua.get_tk_widget().pack(side=ctk.TOP, fill=ctk.BOTH, expand=True)
-
+        #Ao iniciar o sistema, o gráfico é desenhado com valoress [0,0]
         self.atualizar_dados(valores_energia=[0, 0], valores_agua=[0, 0])
 
     def configurar_estilo_eixo(self, ax, titulo: str, unidade_y: str):
-        # ax.set_facecolor(self.cor_fundo_figura)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['bottom'].set_color('white')

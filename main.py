@@ -67,13 +67,13 @@ class App(ctk.CTk):
     def atualizar_todos_graficos(self):
         if self.janela_graficos_instancia:
             print("[App] Enviando dados atualizados para a janela de gráficos...")
-            valores_energia_consumo = [self.total_energia_gemini_kwh, self.total_energia_ollama_kwh]
-            valores_agua_consumo = [self.total_agua_gemini_ml, self.total_agua_ollama_ml]
+            #valores_energia_consumo = [self.total_energia_gemini_kwh, self.total_energia_ollama_kwh]
+            #valores_agua_consumo = [self.total_agua_gemini_ml, self.total_agua_ollama_ml]
             valores_energia_economia = [self.total_energia_padrao_kwh, self.total_energia_gemini_kwh]
             valores_agua_economia = [self.total_agua_padrao_ml, self.total_agua_gemini_ml]
             
             self.janela_graficos_instancia.atualizar_dados_publico(
-                valores_energia_consumo, valores_agua_consumo,
+                #valores_energia_consumo, valores_agua_consumo,
                 valores_energia_economia, valores_agua_economia
             )
         """
