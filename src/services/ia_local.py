@@ -13,10 +13,13 @@ def requisicao_ollama(input_usuario: str, input_sistema: str | None = None) -> s
     mensagens = []
     if input_sistema is not None:
         mensagens.append({"role": "system", "content": input_sistema})
+    else:
+        mensagens.append({"role": "system", "content": "Resuma o texto que o usuário enviou, sem interagir com ele"})
 
     mensagens.append({"role": "user", "content": input_usuario})
 
     modelo_usado = "llama3.1:8b" 
+    # modelo_usado = "phi3:mini"
 
     try:
         resposta = ollama.chat(model=modelo_usado, messages=mensagens)

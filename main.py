@@ -14,6 +14,7 @@ class Janelas:
     GRAFICOS = 'GRAFICOS'
 
 class App(ctk.CTk):
+    """Classe responsável por inicializar a interface gráfica e gerenciar os estados da aplicação"""
     def __init__(self):
         super().__init__()
 
