@@ -5,7 +5,7 @@ from google.genai import errors
 
 load_dotenv()
 
-def requisicao_gemini(input_usuario: str) -> tuple[str, int]:
+def obter_resposta_gemini(input_usuario: str) -> tuple[str, int]:
     """
     Recebe obrigatóriamente um input de usuário. Envia para o GEMINI processar as entradas e retornar uma tupla, com a string de resultado no indice 0 e o inteiro do total de tokens no indice 1.
     """
@@ -27,6 +27,3 @@ def requisicao_gemini(input_usuario: str) -> tuple[str, int]:
         return texto_resposta, contador_tokens_totais # type: ignore
     except errors.APIError as e:
         return e.__str__(), 0
-
-if __name__ == '__main__':
-    print(requisicao_gemini('olá'))
