@@ -12,9 +12,6 @@ class GraficosEconomia(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
 
         plt.style.use('dark_background')
-        # self.cor_fundo_figura = self.cget("fg_color")[1] 
-
-        # self.figura_energia = Figure(figsize=(5, 2.5), dpi=100, facecolor=self.cor_fundo_figura)
         self.figura_energia = Figure(figsize=(5, 2.5), dpi=100)
         self.ax_energia = self.figura_energia.add_subplot(111)
         self.canvas_energia_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -22,7 +19,6 @@ class GraficosEconomia(ctk.CTkFrame):
         self.canvas_energia = FigureCanvasTkAgg(self.figura_energia, master=self.canvas_energia_frame)
         self.canvas_energia.get_tk_widget().pack(side=ctk.TOP, fill=ctk.BOTH, expand=True)
 
-        # self.figura_agua = Figure(figsize=(5, 2.5), dpi=100, facecolor=self.cor_fundo_figura)
         self.figura_agua = Figure(figsize=(5, 2.5), dpi=100)
         self.ax_agua = self.figura_agua.add_subplot(111)
         self.canvas_agua_frame = ctk.CTkFrame(self, fg_color="transparent")

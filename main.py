@@ -21,6 +21,17 @@ class App(ctk.CTk):
 
         self.title("Chat ECO-nômico")
         self.geometry("1000x700") 
+        """
+        =============================================
+        Cálculos de gastos conforme estudo (Making AI Less Thirsty: Uncovering 
+        and Addressing the Seccret Water Footprint of AI Models)
+        feito pela Universidade da Califórnia em Riverside e 
+        da Universidade do Texas - 519ml de água e
+        0,14kWh de energia (em média) para cada
+        100 palavras geradas. 
+        ===========================================
+        
+        """
         
         self.CUSTO_ENERGIA_KWH_100_PALAVRAS = 0.14
         self.CUSTO_AGUA_ML_100_PALAVRAS = 0.500
@@ -65,7 +76,9 @@ class App(ctk.CTk):
                 valores_energia_consumo, valores_agua_consumo,
                 valores_energia_economia, valores_agua_economia
             )
-
+        """
+        REALIZANDO A SEPARAÇÃO DAS PALAVRAS POR ESPAÇO EM BRANCO
+        """
     def contar_palavras(self, texto: str) -> int:
         return len(texto.split())
 
