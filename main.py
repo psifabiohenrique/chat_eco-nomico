@@ -22,6 +22,17 @@ class App(ctk.CTk):
 
         self.title("Chat ECO-nômico")
         self.geometry("1000x700") 
+        """
+        =============================================
+        Cálculos de gastos conforme estudo (Making AI Less Thirsty: Uncovering 
+        and Addressing the Seccret Water Footprint of AI Models)
+        feito pela Universidade da Califórnia em Riverside e 
+        da Universidade do Texas - 519ml de água e
+        0,14kWh de energia (em média) para cada
+        100 palavras geradas. 
+        ===========================================
+        
+        """
         
         self.CUSTO_ENERGIA_KWH_100_PALAVRAS = 0.14
         self.CUSTO_AGUA_ML_100_PALAVRAS = 0.500
@@ -57,16 +68,18 @@ class App(ctk.CTk):
     def atualizar_todos_graficos(self):
         if self.janela_graficos_instancia:
             print("[App] Enviando dados atualizados para a janela de gráficos...")
-            valores_energia_consumo = [self.total_energia_gemini_kwh, self.total_energia_ollama_kwh]
-            valores_agua_consumo = [self.total_agua_gemini_ml, self.total_agua_ollama_ml]
+            #valores_energia_consumo = [self.total_energia_gemini_kwh, self.total_energia_ollama_kwh]
+            #valores_agua_consumo = [self.total_agua_gemini_ml, self.total_agua_ollama_ml]
             valores_energia_economia = [self.total_energia_padrao_kwh, self.total_energia_gemini_kwh]
             valores_agua_economia = [self.total_agua_padrao_ml, self.total_agua_gemini_ml]
             
             self.janela_graficos_instancia.atualizar_dados_publico(
-                valores_energia_consumo, valores_agua_consumo,
+                #valores_energia_consumo, valores_agua_consumo,
                 valores_energia_economia, valores_agua_economia
             )
-
+        """
+        REALIZANDO A SEPARAÇÃO DAS PALAVRAS POR ESPAÇO EM BRANCO
+        """
     def contar_palavras(self, texto: str) -> int:
         return len(texto.split())
 
