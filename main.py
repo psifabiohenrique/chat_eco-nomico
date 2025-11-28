@@ -93,21 +93,15 @@ class App(ctk.CTk):
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
 
     def processar_prompt(self):
-        print("[App] Processa Prompt")
         self.meu_estado.resposta_original = 'Começando a processar com o GEMINI'
         self.meu_estado.resposta_processada = 'Começando a processar com o GEMINI'
         threading.Thread(target=self.processar_prompt_background).start()
 
     def processar_prompt_background(self):
-        print("[App] Criando background")
-        print(f'[App] prompt original: {self.meu_estado.prompt_original}')
-        print(f'[App] prompt processado: {self.meu_estado.prompt_processado}')
         self.meu_estado.resposta_original, self.meu_estado.contador_tokens_original = obter_resposta_gemini(
             self.meu_estado.prompt_original)
-        print(f'[App] resposta original: {self.meu_estado.resposta_original}')
         self.meu_estado.resposta_processada, self.meu_estado.contador_tokens_processado = obter_resposta_gemini(
             self.meu_estado.prompt_processado)
-        print(f'[App] resposta processada: {self.meu_estado.resposta_processada}')
         self.ao_trocar_llm(self.JANELAS.RESPOSTAS)
 
 

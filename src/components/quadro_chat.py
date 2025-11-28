@@ -28,8 +28,8 @@ ENTRADA: "Com o devido respeito, venho por meio desta solicitar que, por obséqu
 SAÍDA: Resuma o documento, incluindo apenas as conclusões gerais. Exclua dados estatísticos.
 """
 
-MODELO = "llama3.1:8b"
-# MODELO = 'gpt-oss:20b'
+# MODELO = "llama3.1:8b"
+MODELO = 'gpt-oss:20b'
 # MODELO = 'phi3:instruct'
 
 
@@ -47,13 +47,13 @@ class QuadroChat(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
 
         # Caixa de texto mostrando o último input.
-        ctk.CTkLabel(self, text="Prompt processado:").grid(row=0, column=0, sticky="nsew", padx=10, pady=(10, 5))
+        ctk.CTkLabel(self, text="Prompt Resumido:").grid(row=0, column=0, sticky="nsew", padx=10, pady=(10, 5))
         self.caixa_texto = ctk.CTkTextbox(self, state="normal", font=("Arial", 14), )
         self.caixa_texto.insert('1.0', self.meu_estado.prompt_processado)
         self.caixa_texto.configure(state="disabled")
         self.caixa_texto.grid(row=1, column=0, sticky="nsew", padx=10, pady=(10, 5))
 
-        ctk.CTkLabel(self, text="Inserir novo prompt").grid(row=2, column=0, sticky="nsew", padx=10, pady=(10, 5))
+        ctk.CTkLabel(self, text="Prompt Original").grid(row=2, column=0, sticky="nsew", padx=10, pady=(10, 5))
         self.campo_entrada = ctk.CTkTextbox(self, font=("Arial", 14))
         self.campo_entrada.insert('1.0', self.meu_estado.prompt_original)
         self.campo_entrada.grid(row=3, column=0, sticky="ew", padx=10, pady=(5, 10))
