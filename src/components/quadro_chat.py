@@ -29,6 +29,8 @@ SAÍDA: Resuma o documento, incluindo apenas as conclusões gerais. Exclua dados
 """
 
 MODELO = "llama3.1:8b"
+# MODELO = 'gpt-oss:20b'
+# MODELO = 'phi3:instruct'
 
 
 class QuadroChat(ctk.CTkFrame):
@@ -61,13 +63,6 @@ class QuadroChat(ctk.CTkFrame):
 
 
     def ao_enviar_pressionado(self):
-        # Apresentando a informação para o usuário aguardar a IA responder
-        self.caixa_texto.configure(state="normal")
-        self.caixa_texto.insert(tkinter.END, "Processando o input, aguarde...")
-        self.caixa_texto.see(tkinter.END)
-        self.caixa_texto.configure(state="disabled")
-
-
         self.botao_enviar.configure(state="disabled")
         prompt = self.campo_entrada.get('0.0', 'end')
         threading.Thread(
@@ -78,16 +73,23 @@ class QuadroChat(ctk.CTkFrame):
     def processar_localmente(self, prompt: str, ):
 
         self.meu_estado.prompt_original = prompt
-        mensagens = [{"role": "system", "content": INSTRUCAO_SISTEMA}, {"role": "user", "content": prompt}]
-        resposta = ollama.chat(model=MODELO, messages=mensagens, stream=True)
 
         # Apresentando a informação para o usuário aguardar a IA responder
         self.caixa_texto.configure(state="normal")
-        self.caixa_texto.delete("1.0", "end")
+        self.caixa_texto.insert(tkinter.END, "Processando o input, aguarde...")
+        self.caixa_texto.see(tkinter.END)
         self.caixa_texto.configure(state="disabled")
+
+        mensagens = [{"role": "system", "content": INSTRUCAO_SISTEMA}, {"role": "user", "content": prompt}]
+        resposta = ollama.chat(model=MODELO, messages=mensagens, stream=True)
 
         for chunk in resposta:
             if "content" in chunk['message']:
+                if 'Processando o input, aguarde...' in self.caixa_texto.get('0.0', 'end'):
+                    # Apresentando a informação para o usuário aguardar a IA responder
+                    self.caixa_texto.configure(state="normal")
+                    self.caixa_texto.delete("1.0", "end")
+                    self.caixa_texto.configure(state="disabled")
                 texto_chunk = chunk["message"]["content"]
                 self.master.after(0, self.atualiza_texto_resposta, texto_chunk)
 
