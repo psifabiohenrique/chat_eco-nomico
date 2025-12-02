@@ -22,7 +22,7 @@ def obter_resposta_gemini(input_usuario: str) -> tuple[str, int]:
             model="gemini-2.5-flash",
             contents=input_usuario,
             config=types.GenerateContentConfig(
-                temperature=0.0,        # Elimina a aleatoriedade
+                temperature=2.0,        # 0.0 Elimina a aleatoriedade e 2.0 Aleatoriedade máxima
                 top_p=1.0,
                 thinking_config=types.ThinkingConfig(
                     thinking_budget=0
