@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from PIL import Image
 
 class BarraLateral(ctk.CTkFrame):
     def __init__(self, master, funcao_trocar_llm, **kwargs):
@@ -21,3 +22,7 @@ class BarraLateral(ctk.CTkFrame):
                                             command=lambda: self.funcao_trocar_llm(self.master.JANELAS.GRAFICOS), 
                                             fg_color="#0056b3") 
         self.botao_graficos.grid(row=3, column=0, pady=(20, 10), padx=20, sticky="ew")
+
+        img = Image.open('./imagens/logo-unb.png')
+        imagem = ctk.CTkImage(img, size=(300, 100))
+        ctk.CTkLabel(self, image=imagem, text='').grid(row=4, column=0, pady=(20, 10))
