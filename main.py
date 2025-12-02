@@ -1,5 +1,4 @@
 import threading
-
 import customtkinter as ctk
 
 from src.components.quadro_respostas import QuadroRespostas
@@ -35,14 +34,12 @@ class App(ctk.CTk):
         0,14kWh de energia (em média) para cada
         100 palavras geradas. 
         ===========================================
-        
         """
 
         self.meu_estado = GerenciadorEstados()
 
         self.CUSTO_ENERGIA_KWH_100_PALAVRAS = 0.14
         self.CUSTO_AGUA_ML_100_PALAVRAS = 0.500
-
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=4)
@@ -54,34 +51,13 @@ class App(ctk.CTk):
 
         self.ao_trocar_llm(self.JANELAS.INICIO)
 
-    def abrir_janela_graficos(self):
-        if self.janela_graficos_instancia is None:
-            print("[App] Criando nova janela de gráficos...")
-            self.janela_graficos_instancia = JanelaGraficos(self)
-        else:
-            print("[App] Focando na janela de gráficos existente...")
-            self.janela_graficos_instancia.focus()
-
-    def atualizar_todos_graficos(self):
-        if self.janela_graficos_instancia:
-            print("[App] Enviando dados atualizados para a janela de gráficos...")
-            # valores_energia_consumo = [self.total_energia_gemini_kwh, self.total_energia_ollama_kwh]
-            # valores_agua_consumo = [self.total_agua_gemini_ml, self.total_agua_ollama_ml]
-            valores_energia_economia = [self.total_energia_padrao_kwh, self.total_energia_gemini_kwh]
-            valores_agua_economia = [self.total_agua_padrao_ml, self.total_agua_gemini_ml]
-
-            self.janela_graficos_instancia.atualizar_dados_publico(
-                # valores_energia_consumo, valores_agua_consumo,
-                valores_energia_economia, valores_agua_economia
-            )
-        """
-        REALIZANDO A SEPARAÇÃO DAS PALAVRAS POR ESPAÇO EM BRANCO
-        """
-
     def contar_palavras(self, texto: str) -> int:
         return len(texto.split())
 
     def ao_trocar_llm(self, nome_llm: str):
+        #Remove o quadro anterior da tela e da memória
+        if hasattr(self, 'quadro_resp') and self.quadro_resp is not None:
+            self.quadro_resp.destroy()
         if nome_llm == self.JANELAS.INICIO:
             self.quadro_resp = QuadroChat(self, self.meu_estado, self.processar_prompt)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
@@ -89,7 +65,8 @@ class App(ctk.CTk):
             self.quadro_resp = QuadroRespostas(self, self.meu_estado)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
         elif nome_llm == self.JANELAS.GRAFICOS:
-            self.quadro_resp = JanelaGraficos(self)
+            # Passando o estado corretamente ao criar a janela
+            self.quadro_resp = JanelaGraficos(self, self.meu_estado)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
 
     def processar_prompt(self):
@@ -98,11 +75,30 @@ class App(ctk.CTk):
         threading.Thread(target=self.processar_prompt_background).start()
 
     def processar_prompt_background(self):
+        # 1. Obtém as respostas da IA
         self.meu_estado.resposta_original, self.meu_estado.contador_tokens_original = obter_resposta_gemini(
             self.meu_estado.prompt_original)
         self.meu_estado.resposta_processada, self.meu_estado.contador_tokens_processado = obter_resposta_gemini(
             self.meu_estado.prompt_processado)
-        self.ao_trocar_llm(self.JANELAS.RESPOSTAS)
+
+        # 2. CÁLCULOS (Salvando direto no estado)
+        
+        # Cenário Padrão: Prompt Original + Resposta Original
+        total_palavras_padrao = self.contar_palavras(self.meu_estado.prompt_original) + \
+                                self.contar_palavras(self.meu_estado.resposta_original)
+        
+        self.meu_estado.energia_padrao = (total_palavras_padrao / 100) * self.CUSTO_ENERGIA_KWH_100_PALAVRAS
+        self.meu_estado.agua_padrao = (total_palavras_padrao / 100) * self.CUSTO_AGUA_ML_100_PALAVRAS
+
+        # Cenário Otimizado: Prompt Processado + Resposta Processada
+        total_palavras_otimizado = self.contar_palavras(self.meu_estado.prompt_processado) + \
+                                   self.contar_palavras(self.meu_estado.resposta_processada)
+
+        self.meu_estado.energia_otimizada = (total_palavras_otimizado / 100) * self.CUSTO_ENERGIA_KWH_100_PALAVRAS
+        self.meu_estado.agua_otimizada = (total_palavras_otimizado / 100) * self.CUSTO_AGUA_ML_100_PALAVRAS
+
+        # 3. Muda para a tela de respostas (usando after para garantir segurança na thread)
+        self.after(0, lambda: self.ao_trocar_llm(self.JANELAS.RESPOSTAS))
 
 
 if __name__ == "__main__":
