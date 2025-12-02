@@ -25,79 +25,87 @@ class App(ctk.CTk):
 
         self.title("Chat ECO-nômico")
         self.geometry("1000x700")
+        
         """
         =============================================
         Cálculos de gastos conforme estudo (Making AI Less Thirsty: Uncovering 
-        and Addressing the Seccret Water Footprint of AI Models)
-        feito pela Universidade da Califórnia em Riverside e 
-        da Universidade do Texas - 519ml de água e
-        0,14kWh de energia (em média) para cada
-        100 palavras geradas. 
+        and Addressing the Secret Water Footprint of AI Models).
+        
+        Valores de referência para cada 100 unidades (neste caso, adaptado para Tokens):
+        - 0.14 kWh de energia
+        - 500 mL de água
         ===========================================
         """
 
         self.meu_estado = GerenciadorEstados()
 
-        self.CUSTO_ENERGIA_KWH_100_PALAVRAS = 0.14
-        self.CUSTO_AGUA_ML_100_PALAVRAS = 0.500
+        self.CUSTO_ENERGIA_KWH_100_TOKENS = 0.14
+        self.CUSTO_AGUA_ML_100_TOKENS = 0.500
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=4)
         self.grid_rowconfigure(0, weight=1)
 
-        self.barra_lateral = BarraLateral(self,
-                                          funcao_trocar_llm=self.ao_trocar_llm)
+        self.barra_lateral = BarraLateral(self, funcao_trocar_llm=self.ao_trocar_llm)
         self.barra_lateral.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
+        # Variável para controlar o quadro atual exibido na direita
+        self.quadro_resp = None
+        
+        # Inicia na tela inicial
         self.ao_trocar_llm(self.JANELAS.INICIO)
 
-    def contar_palavras(self, texto: str) -> int:
-        return len(texto.split())
-
     def ao_trocar_llm(self, nome_llm: str):
-        #Remove o quadro anterior da tela e da memória
-        if hasattr(self, 'quadro_resp') and self.quadro_resp is not None:
+        # Limpa o quadro anterior da memória e da tela antes de criar o novo
+        if self.quadro_resp is not None:
             self.quadro_resp.destroy()
+
         if nome_llm == self.JANELAS.INICIO:
             self.quadro_resp = QuadroChat(self, self.meu_estado, self.processar_prompt)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
+        
         elif nome_llm == self.JANELAS.RESPOSTAS:
             self.quadro_resp = QuadroRespostas(self, self.meu_estado)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
+        
         elif nome_llm == self.JANELAS.GRAFICOS:
-            # Passando o estado corretamente ao criar a janela
+            # Passa o estado atualizado para a janela de gráficos
             self.quadro_resp = JanelaGraficos(self, self.meu_estado)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
 
     def processar_prompt(self):
-        self.meu_estado.resposta_original = 'Começando a processar com o GEMINI'
-        self.meu_estado.resposta_processada = 'Começando a processar com o GEMINI'
+        """Inicia o processamento em background para não travar a interface"""
+        self.meu_estado.resposta_original = 'Começando a processar com o GEMINI...'
+        self.meu_estado.resposta_processada = 'Começando a processar com o GEMINI...'
         threading.Thread(target=self.processar_prompt_background).start()
 
     def processar_prompt_background(self):
-        # 1. Obtém as respostas da IA
+        # 1. Obtém as respostas da IA (O return já traz: texto_resposta, total_tokens)
+        #A função obter_resposta_gemini já retorna o total de tokens da transação (input + output)
         self.meu_estado.resposta_original, self.meu_estado.contador_tokens_original = obter_resposta_gemini(
             self.meu_estado.prompt_original)
+        
         self.meu_estado.resposta_processada, self.meu_estado.contador_tokens_processado = obter_resposta_gemini(
             self.meu_estado.prompt_processado)
 
-        # 2. CÁLCULOS (Salvando direto no estado)
+        # ==============================================================================
+        # CÁLCULO 1: CENÁRIO PADRÃO (Baseado em TOKENS)
+        # ==============================================================================
+        total_tokens_padrao = self.meu_estado.contador_tokens_original
         
-        # Cenário Padrão: Prompt Original + Resposta Original
-        total_palavras_padrao = self.contar_palavras(self.meu_estado.prompt_original) + \
-                                self.contar_palavras(self.meu_estado.resposta_original)
-        
-        self.meu_estado.energia_padrao = (total_palavras_padrao / 100) * self.CUSTO_ENERGIA_KWH_100_PALAVRAS
-        self.meu_estado.agua_padrao = (total_palavras_padrao / 100) * self.CUSTO_AGUA_ML_100_PALAVRAS
+        # Fórmula: (Total Tokens / 100) * Custo Unitário
+        self.meu_estado.energia_padrao = (total_tokens_padrao / 100) * self.CUSTO_ENERGIA_KWH_100_TOKENS
+        self.meu_estado.agua_padrao = (total_tokens_padrao / 100) * self.CUSTO_AGUA_ML_100_TOKENS
 
-        # Cenário Otimizado: Prompt Processado + Resposta Processada
-        total_palavras_otimizado = self.contar_palavras(self.meu_estado.prompt_processado) + \
-                                   self.contar_palavras(self.meu_estado.resposta_processada)
+        # ==============================================================================
+        # CÁLCULO 2: CENÁRIO OTIMIZADO (Baseado em TOKENS)
+        # ==============================================================================
+        total_tokens_otimizado = self.meu_estado.contador_tokens_processado
 
-        self.meu_estado.energia_otimizada = (total_palavras_otimizado / 100) * self.CUSTO_ENERGIA_KWH_100_PALAVRAS
-        self.meu_estado.agua_otimizada = (total_palavras_otimizado / 100) * self.CUSTO_AGUA_ML_100_PALAVRAS
+        self.meu_estado.energia_otimizada = (total_tokens_otimizado / 100) * self.CUSTO_ENERGIA_KWH_100_TOKENS
+        self.meu_estado.agua_otimizada = (total_tokens_otimizado / 100) * self.CUSTO_AGUA_ML_100_TOKENS
 
-        # 3. Muda para a tela de respostas (usando after para garantir segurança na thread)
+
         self.after(0, lambda: self.ao_trocar_llm(self.JANELAS.RESPOSTAS))
 
 

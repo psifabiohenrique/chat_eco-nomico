@@ -66,9 +66,9 @@ class GraficosEconomia(ctk.CTkFrame):
     
     def atualizar_dados(self, valores_energia: list, valores_agua: list):
         self.desenhar_grafico(self.ax_energia, self.canvas_energia, 
-                              "Economia de Energia (kWh)", "kWh", 
+                              "Consumo Total de Energia (kWh)", "kWh", 
                               valores_energia, '#FFC107')
         
         self.desenhar_grafico(self.ax_agua, self.canvas_agua, 
-                              "Economia de Água (mL)", "mL", 
+                              "Consumo Total de Água (mL)", "mL", 
                               valores_agua, '#00A8A8')
