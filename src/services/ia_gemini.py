@@ -21,7 +21,8 @@ def obter_resposta_gemini(input_usuario: str) -> tuple[str, int]:
             model="gemini-2.5-flash",
             contents=input_usuario,
         )
-        contador_tokens_totais = resposta.usage_metadata.total_token_count # type: ignore
+        #TOKENS_USUARIO+TOKENS_RESPOSTAS
+        contador_tokens_totais = resposta.usage_metadata.total_token_count 
         texto_resposta = resposta.text
 
         return texto_resposta, contador_tokens_totais # type: ignore
