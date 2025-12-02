@@ -10,9 +10,9 @@ from src.services.ia_gemini import obter_resposta_gemini
 
 
 class Janelas:
-    INICIO = 'INICIO'
-    RESPOSTAS = 'RESPOSTAS'
-    GRAFICOS = 'GRAFICOS'
+    INICIO = "INICIO"
+    RESPOSTAS = "RESPOSTAS"
+    GRAFICOS = "GRAFICOS"
 
 
 class App(ctk.CTk):
@@ -25,7 +25,7 @@ class App(ctk.CTk):
 
         self.title("Chat ECO-nômico")
         self.geometry("1000x700")
-        
+
         """
         =============================================
         Cálculos de gastos conforme estudo (Making AI Less Thirsty: Uncovering 
@@ -51,7 +51,7 @@ class App(ctk.CTk):
 
         # Variável para controlar o quadro atual exibido na direita
         self.quadro_resp = None
-        
+
         # Inicia na tela inicial
         self.ao_trocar_llm(self.JANELAS.INICIO)
 
@@ -63,11 +63,11 @@ class App(ctk.CTk):
         if nome_llm == self.JANELAS.INICIO:
             self.quadro_resp = QuadroChat(self, self.meu_estado, self.processar_prompt)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
-        
+
         elif nome_llm == self.JANELAS.RESPOSTAS:
             self.quadro_resp = QuadroRespostas(self, self.meu_estado)
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
-        
+
         elif nome_llm == self.JANELAS.GRAFICOS:
             # Passa o estado atualizado para a janela de gráficos
             self.quadro_resp = JanelaGraficos(self, self.meu_estado)
@@ -75,36 +75,49 @@ class App(ctk.CTk):
 
     def processar_prompt(self):
         """Inicia o processamento em background para não travar a interface"""
-        self.meu_estado.resposta_original = 'Começando a processar com o GEMINI...'
-        self.meu_estado.resposta_processada = 'Começando a processar com o GEMINI...'
+        self.meu_estado.resposta_original = "Começando a processar com o GEMINI..."
+        self.meu_estado.resposta_processada = "Começando a processar com o GEMINI..."
         threading.Thread(target=self.processar_prompt_background).start()
 
     def processar_prompt_background(self):
         # 1. Obtém as respostas da IA (O return já traz: texto_resposta, total_tokens)
-        #A função obter_resposta_gemini já retorna o total de tokens da transação (input + output)
-        self.meu_estado.resposta_original, self.meu_estado.contador_tokens_original = obter_resposta_gemini(
-            self.meu_estado.prompt_original)
-        
-        self.meu_estado.resposta_processada, self.meu_estado.contador_tokens_processado = obter_resposta_gemini(
-            self.meu_estado.prompt_processado)
+        # A função obter_resposta_gemini já retorna o total de tokens da transação (input + output)
+        (
+            self.meu_estado.resposta_processada,
+            self.meu_estado.contador_tokens_processado,
+        ) = obter_resposta_gemini(self.meu_estado.prompt_processado)
+
+        (
+            self.meu_estado.resposta_original,
+            self.meu_estado.contador_tokens_original,
+        ) = obter_resposta_gemini(self.meu_estado.prompt_original)
 
         # ==============================================================================
         # CÁLCULO 1: CENÁRIO PADRÃO (Baseado em TOKENS)
         # ==============================================================================
         total_tokens_padrao = self.meu_estado.contador_tokens_original
-        
+
         # Fórmula: (Total Tokens / 100) * Custo Unitário
-        self.meu_estado.energia_padrao = (total_tokens_padrao / 100) * self.CUSTO_ENERGIA_KWH_100_TOKENS
-        self.meu_estado.agua_padrao = (total_tokens_padrao / 100) * self.CUSTO_AGUA_ML_100_TOKENS
+        self.meu_estado.energia_padrao = (
+            total_tokens_padrao / 100
+        ) * self.CUSTO_ENERGIA_KWH_100_TOKENS
+        self.meu_estado.agua_padrao = (
+            total_tokens_padrao / 100
+        ) * self.CUSTO_AGUA_ML_100_TOKENS
 
         # ==============================================================================
         # CÁLCULO 2: CENÁRIO OTIMIZADO (Baseado em TOKENS)
         # ==============================================================================
         total_tokens_otimizado = self.meu_estado.contador_tokens_processado
 
-        self.meu_estado.energia_otimizada = (total_tokens_otimizado / 100) * self.CUSTO_ENERGIA_KWH_100_TOKENS
-        self.meu_estado.agua_otimizada = (total_tokens_otimizado / 100) * self.CUSTO_AGUA_ML_100_TOKENS
-
+        self.meu_estado.energia_otimizada = (
+            total_tokens_otimizado / 100
+        ) * self.CUSTO_ENERGIA_KWH_100_TOKENS
+        self.meu_estado.agua_otimizada = (
+            total_tokens_otimizado / 100
+        ) * self.CUSTO_AGUA_ML_100_TOKENS
+        print(f"Total tokens padrão: {total_tokens_padrao}")
+        print(f"Total tokens otimizado: {total_tokens_otimizado}")
 
         self.after(0, lambda: self.ao_trocar_llm(self.JANELAS.RESPOSTAS))
 

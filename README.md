@@ -91,6 +91,8 @@ O projeto utiliza o tkinter para construir uma interface de usuário que irá re
         ```
 
 4. Executando o projeto
-    ```bash
-    python main.py
-    ```
+    1. Crie um arquivo chamado .env na raiz do projeto, colocando a chave de API do google gemini nele, conforme mostrado no arquivo .env.exemple
+    2. Inicialize o programa com o comando:
+        ```bash
+        python main.py
+        ```

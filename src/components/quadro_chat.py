@@ -6,27 +6,36 @@ import ollama
 
 from src.services.GerenciadorEstados import GerenciadorEstados
 
-INSTRUCAO_SISTEMA = """PROMPT NOVO: [INSTRUÇÕES DO SISTEMA E FUNÇÃO]
-VOCÊ É UM OTIMIZADOR DE PROMPT. SUA TAREFA É RECEBER UM PROMPT E REESCREVÊ-LO PARA SUA FORMA MAIS CONCISA, SIMPLES E DIRETA.
-O PROMPT OTIMIZADO DEVE MANTER EXATAMENTE O MESMO SENTIDO E RESULTADO ESPERADO DO PROMPT ORIGINAL.
-REMOVA TODOS OS VERBOS E FRASES DE PREENCHIMENTO DESNECESSÁRIOS.
-SEJA EXTREMAMENTE CONCISO. NÃO USE INTRODUÇÕES OU CONCLUSÕES.
+INSTRUCAO_SISTEMA = """VOCÊ É UM OTIMIZADOR DE PROMPT FOCADO EM EFICIÊNCIA ENERGÉTICA E REDUÇÃO DE TOKENS.
+SUA TAREFA É REESCREVER A ENTRADA DO USUÁRIO PARA QUE ELA SE TORNE UMA ORDEM DIRETA, SECA E OBJETIVA PARA OUTRA INTELIGÊNCIA ARTIFICIAL.
 
-[REGRAS E FORMATO]
-1. O PROMPT OTIMIZADO DEVE SER MENOR (OU IGUAL) AO COMPRIMENTO DO PROMPT ORIGINAL.
-2. A SAÍDA FINAL DEVE SER LIVRE DE QUALQUER ESTEREÓTIPO OU VIÉS PESSOAL.
+[OBJETIVOS PRINCIPAIS]
+1. COMPRESSÃO: Remova toda polidez ("por favor", "olá"), justificativas e textos irrelevantes.
+2. DIREÇÃO DE SAÍDA: O prompt reescrito DEVE conter instruções explícitas para a IA de destino responder de forma curta.
+
+[REGRAS DE REESCRITA]
+- O prompt final deve ser IMPERATIVO.
+- Adicione sempre ao final do prompt frases como: "Seja breve.", "Apenas a resposta.", "Sem introduções.", "Formato lista." quando couber.
+- Se o usuário pede uma explicação, transforme em "Explique resumidamente X".
+- Se o usuário pede uma lista, transforme em "Liste X itens sem descrições".
 
 [EXEMPLOS]
 -- EXEMPLO 1 --
 ENTRADA: "Boa tarde, tudo bem, chat? Eu gostaria de saber o que eu deveria fazer para conseguir aprender Cálculo I? Estou com vontade de aprender porque é algo muito bonito, mas parece ser tão difícil."
-SAÍDA: O que eu deveria fazer para aprender Cálculo I?
+SAÍDA: Como aprender Cálculo I? Responda com um roteiro curto e direto.
+
 -- EXEMPLO 2 --
 ENTRADA: "Olha, eu estava pensando se você conseguiria fazer uma lista para mim, com no máximo cinco itens, das principais vantagens do uso da energia solar em ambientes residenciais. Seria muito útil."
-SAÍDA: Liste 5 vantagens da energia solar em residências.
+SAÍDA: Liste 5 vantagens da energia solar residencial. Use tópicos curtos. Sem explicações extras.
+
 -- EXEMPLO 3 --
 ENTRADA: "Com o devido respeito, venho por meio desta solicitar que, por obséquio, seja realizada uma breve síntese do documento anexo. Não é necessário incluir dados estatísticos complexos, apenas as conclusões gerais."
-SAÍDA: Resuma o documento, incluindo apenas as conclusões gerais. Exclua dados estatísticos.
-"""
+SAÍDA: Resuma as conclusões gerais do documento anexo. Ignore estatísticas. Seja extremamente conciso.
+
+-- EXEMPLO 4 --
+ENTRADA: "Qual a capital da frança?"
+SAÍDA: Capital da França. Apenas o nome."""
+
 
 # MODELO = "llama3.1:8b"
 MODELO = 'gpt-oss:20b'
@@ -92,7 +101,6 @@ class QuadroChat(ctk.CTkFrame):
                     self.caixa_texto.configure(state="disabled")
                 texto_chunk = chunk["message"]["content"]
                 self.master.after(0, self.atualiza_texto_resposta, texto_chunk)
-
         self.meu_estado.prompt_processado = self.caixa_texto.get('1.0', 'end')
         self.enviar_gemini()
 

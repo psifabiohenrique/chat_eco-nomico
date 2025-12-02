@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 from google.genai import errors
 
 load_dotenv()
+
 
 def obter_resposta_gemini(input_usuario: str) -> tuple[str, int]:
     """
@@ -12,19 +14,25 @@ def obter_resposta_gemini(input_usuario: str) -> tuple[str, int]:
     api_key = os.getenv("API_KEY")
     if api_key is None:
         raise Exception("A Chave de API não está configurada na variável de ambiente!")
-    
+
     try:
         client = genai.Client(api_key=api_key)
-
 
         resposta = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=input_usuario,
+            config=types.GenerateContentConfig(
+                temperature=0.0,        # Elimina a aleatoriedade
+                top_p=1.0,
+                thinking_config=types.ThinkingConfig(
+                    thinking_budget=0
+                )  # Disables thinking
+            ),
         )
-        #TOKENS_USUARIO+TOKENS_RESPOSTAS
-        contador_tokens_totais = resposta.usage_metadata.total_token_count 
+        # TOKENS_USUARIO+TOKENS_RESPOSTAS
+        contador_tokens_totais = resposta.usage_metadata.total_token_count
         texto_resposta = resposta.text
 
-        return texto_resposta, contador_tokens_totais # type: ignore
+        return texto_resposta, contador_tokens_totais  # type: ignore
     except errors.APIError as e:
         return e.__str__(), 0
