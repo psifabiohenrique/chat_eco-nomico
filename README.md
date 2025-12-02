@@ -19,6 +19,25 @@ O projeto utiliza o tkinter para construir uma interface de usuário que irá re
 - Construir cálculos de consumo:
     **Ingrid**
 
+
+## Organização do projeto
+
+![Arvore de arquivos](imagens/arquivos.png)
+
+O arquivo ```main.py``` é o ponto de entrada do programa. Ela carrega a tela inicial.
+
+Em ```src/componentes``` ficam as classes de cada componente exibido dentro da tela inicial.
+
+Em ```src/services``` estão os módulos auxiliares, responsaveis por guardar os dados entre os componentes do aplicativo e fazer a comunicação com o GEMINI.
+
+O arquivo ```.gitignore``` é utilizado pelo git para ignorar arquivos que não devem ser enviados para o github
+
+O arquivo ```.env.exemple``` é um modelo de exemplo do arquivo ```.env```, responsável por armazenar a chave de API do GEMINI.
+
+O arquivo ```.env``` deverá ser criado pelo usuário na raiz do projeto.
+
+O arquivo ```requirements.txt``` contem as dependências do projeto, é utilizado para instalar o ambiente de desenvolvimento.
+
 ## Instruções para inicializar o projeto
 
 1. Instalação e configuração do git
