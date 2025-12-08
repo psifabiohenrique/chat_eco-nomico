@@ -11,7 +11,7 @@ O projeto utiliza o tkinter para construir uma interface de usuário que irá re
 ## Planejamento do trabalho
 
 - Construir interface Gráfica:
-    **Danielle**
+    **Danielle/Ingrid**
 - Construir modelo de IA menor e local:
     **Fábio**
 - Construir prompts para redução de tokens:
