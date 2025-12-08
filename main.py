@@ -16,9 +16,10 @@ class Janelas:
 
 
 class App(ctk.CTk):
-    """Classe responsável por inicializar a interface gráfica e gerenciar os estados da aplicação"""
+    """Classe responsável por inicializar a interface gráfica e gerenciar os estados da aplicação. Herda de ctk.CTk"""
 
     def __init__(self):
+        """Construtor da classe"""
         super().__init__()
 
         self.JANELAS = Janelas()
@@ -56,6 +57,12 @@ class App(ctk.CTk):
         self.ao_trocar_llm(self.JANELAS.INICIO)
 
     def ao_trocar_llm(self, nome_llm: str):
+        """Função responsável por alterar os componentes exibidos (i.e., janela de inicio, de respostas e de gráficos).
+        
+        Params:
+            nome_llm: string
+        Return:
+            None"""
         # Limpa o quadro anterior da memória e da tela antes de criar o novo
         if self.quadro_resp is not None:
             self.quadro_resp.destroy()
@@ -74,12 +81,13 @@ class App(ctk.CTk):
             self.quadro_resp.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
 
     def processar_prompt(self):
-        """Inicia o processamento em background para não travar a interface"""
+        """Inicia o processamento dos prompts com threads para não travar a interface"""
         self.meu_estado.resposta_original = "Começando a processar com o GEMINI..."
         self.meu_estado.resposta_processada = "Começando a processar com o GEMINI..."
         threading.Thread(target=self.processar_prompt_background).start()
 
     def processar_prompt_background(self):
+        """Processa os prompts com o gemini. Deve ser executada dentro de uma thread"""
         # 1. Obtém as respostas da IA (O return já traz: texto_resposta, total_tokens)
         # A função obter_resposta_gemini já retorna o total de tokens da transação (input + output)
         (

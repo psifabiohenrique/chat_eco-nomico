@@ -10,6 +10,11 @@ load_dotenv()
 def obter_resposta_gemini(input_usuario: str) -> tuple[str, int]:
     """
     Recebe obrigatóriamente um input de usuário. Envia para o GEMINI processar as entradas e retornar uma tupla, com a string de resultado no indice 0 e o inteiro do total de tokens no indice 1.
+
+    Params:
+        input_usuario: string
+    return:
+        tupla[string, inteiro]
     """
     api_key = os.getenv("API_KEY")
     if api_key is None:

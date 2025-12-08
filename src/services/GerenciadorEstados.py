@@ -1,4 +1,5 @@
 class GerenciadorEstados:
+    """Classe responsável por gerenciar estados e variáveis da aplicação"""
     def __init__(self):
         self.prompt_original = ''
         self.prompt_processado = ''

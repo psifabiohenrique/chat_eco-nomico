@@ -2,7 +2,13 @@ import customtkinter as ctk
 from PIL import Image
 
 class BarraLateral(ctk.CTkFrame):
+    """Classe responsável pelo componente do menu lateral da aplicação"""
     def __init__(self, master, funcao_trocar_llm, **kwargs):
+        """Método construtor do componente.
+        Params:
+            master: App
+            funcao_trocar_llm: função que altera o componente principal exibido
+        """
         super().__init__(master, **kwargs)
         
         self.funcao_trocar_llm = funcao_trocar_llm

@@ -4,7 +4,15 @@ from src.services.GerenciadorEstados import GerenciadorEstados
 
 
 class QuadroRespostas(ctk.CTkFrame):
+    """Classe que controla o componente de respostas do gemini"""
     def __init__(self, master, estado: GerenciadorEstados):
+        """Método contrutor da classe.
+        
+        Params:
+            master: App
+            estado: GerenciadorEstados
+        Return:
+            None"""
         super().__init__(master)
 
         self.meu_estado = estado

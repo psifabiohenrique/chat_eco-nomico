@@ -5,7 +5,13 @@ from matplotlib.figure import Figure
 
 #Define a classe GraficosEconomia 
 class GraficosEconomia(ctk.CTkFrame):
+    """Classe responsável pelos gráficos que serão exibidos no componente que exibe os gráficos de estatística"""
     def __init__(self, master, **kwargs):
+        """Construtor da classe
+        
+        Params:
+            master: App
+        """
         super().__init__(master, **kwargs)
         #Define-se que há apenas 2 linhas dentro desse Frame e weight=1 permite expansão proporcional da Tela
         self.grid_rowconfigure(0, weight=1)
@@ -36,6 +42,15 @@ class GraficosEconomia(ctk.CTkFrame):
         self.atualizar_dados(valores_energia=[0, 0], valores_agua=[0, 0])
 
     def configurar_estilo_eixo(self, ax, titulo: str, unidade_y: str):
+        """Função que configura o estilo do eixo dos gráficos
+        
+        Params:
+            ax: matplotlib.figure.Figure
+            titulo: string
+            unidade_y: string
+        Return:
+            None
+        """
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['bottom'].set_color('white')
@@ -46,6 +61,17 @@ class GraficosEconomia(ctk.CTkFrame):
         ax.set_ylabel(unidade_y, color='white', fontsize=10)
 
     def desenhar_grafico(self, ax, canvas, titulo: str, unidade_y: str, valores: list, cor_otimizado: str):
+        """Função que desenha os gráficos na tela.
+        
+        Params:
+            ax: matplotlib.figure.Figure
+            canvas: FigureCanvasTkAgg
+            titulo: string
+            unidade_y: string
+            valores: list[float]
+            cor_otimizado: str
+        Return:
+            None"""
         ax.clear() 
         categorias = ['Padrão', 'Otimizado']
         cores = ['#FF6347', cor_otimizado]
@@ -65,6 +91,13 @@ class GraficosEconomia(ctk.CTkFrame):
         canvas.draw()
     
     def atualizar_dados(self, valores_energia: list, valores_agua: list):
+        """Redezenha os gráficos na tela.
+        
+        Params:
+            valores_energia: list[float]
+            valores_agua: list[float]
+        Return:
+            None"""
         self.desenhar_grafico(self.ax_energia, self.canvas_energia, 
                               "Consumo Total de Energia (kWh)", "kWh", 
                               valores_energia, '#FFC107')

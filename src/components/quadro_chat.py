@@ -43,7 +43,16 @@ MODELO = 'gpt-oss:20b'
 
 
 class QuadroChat(ctk.CTkFrame):
+    """Classe responsável pelo componente de chat (componente inicial da tela)"""
     def __init__(self, master, estado: GerenciadorEstados, enviar_gemini, **kwargs):
+        """Método construtor
+        
+        Params:
+            master: App
+            estado: GerenciadorEstados
+            enviar_gemini: função
+        Return:
+            None"""
         super().__init__(master, **kwargs)
 
         self.meu_estado = estado
@@ -72,6 +81,7 @@ class QuadroChat(ctk.CTkFrame):
 
 
     def ao_enviar_pressionado(self):
+        """Função que inicia a thread de processamento do ollama quando o botão enviar for clicado"""
         self.botao_enviar.configure(state="disabled")
         prompt = self.campo_entrada.get('0.0', 'end')
         threading.Thread(
@@ -80,6 +90,12 @@ class QuadroChat(ctk.CTkFrame):
         ).start()
 
     def processar_localmente(self, prompt: str, ):
+        """Função que faz o processamento do ollama. Deve ser chamada dentro de uma thread
+        
+        Params:
+            prompt: string
+        Return:
+            None"""
 
         self.meu_estado.prompt_original = prompt
 
@@ -105,6 +121,12 @@ class QuadroChat(ctk.CTkFrame):
         self.enviar_gemini()
 
     def atualiza_texto_resposta(self, novo_texto):
+        """Função auxiliar que atualiza o texto da resposta do ollama no componente da tela.
+        
+        Params:
+            novo_texto: string
+        Return:
+            None"""
         self.caixa_texto.configure(state="normal")
         self.caixa_texto.insert(tkinter.END, novo_texto)
         self.caixa_texto.see(tkinter.END)

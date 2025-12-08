@@ -3,7 +3,14 @@ from src.components.graficos_economia import GraficosEconomia
 from src.services.GerenciadorEstados import GerenciadorEstados
 
 class JanelaGraficos(ctk.CTkFrame):
+    """Classe do componente da janela de gráficos"""
     def __init__(self, master, estado: GerenciadorEstados, **kwargs):
+        """Construtor da classe.
+        Params:
+            master: App
+            estado: GerenciadorEstados
+        Return:
+            None"""
         super().__init__(master, **kwargs)
         
         # Configuração do Grid
